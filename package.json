@@ -27,7 +27,6 @@
     "node-sass": "^3.10.1",
     "raw-loader": "^0.5.1",
     "sass-loader": "^4.0.2",
-    "script-loader": "^0.7.0",
     "style-loader": "^0.13.1",
     "svg-url-loader": "^1.1.0",
     "svgo": "^0.7.1",
