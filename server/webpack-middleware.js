@@ -7,15 +7,31 @@ let compiler = webpack(webpackConfig);
 
 function middlepack(app, server) {
 
-    // open socket
+    // init socket info
 
     let socket = io.listen(server);
+
+    function reload() {
+        // send reload signal to active clients
+        Object
+            .keys(socket.sockets.sockets)
+            .map(d => socket.sockets.sockets[d])
+            .filter(client => client.connected)
+            .forEach(client => {
+                client.emit('reload');
+            })
+    }
+
+    // check templates for changes
+
+    require('chokidar').watch('web/templates/**/*', {ignored: /[\/\\]\./})
+        .on('all', reload);
 
     // load middleware
 
     app.use(require('webpack-dev-middleware')(compiler, {
         stats: {colors: true},
-        reporter: reporter(socket)
+        reporter: reporter(reload)
     }));
 
     // inject live reload code
@@ -42,20 +58,7 @@ function middlepack(app, server) {
 
 // alternative to .waitUntilValid();
 
-function reporter(socket) {
-
-    function reload() {
-
-        // send reload signal to active clients
-
-        Object
-            .keys(socket.sockets.sockets)
-            .map(d => socket.sockets.sockets[d])
-            .filter(client => client.connected)
-            .forEach(client => {
-                client.emit('reload');
-            })
-    }
+function reporter(reload) {
 
     return ({ state, stats, options}) => {
         if(state) {
