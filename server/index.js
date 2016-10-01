@@ -27,7 +27,7 @@ let server = app.set('view engine', 'ejs')
 // webpack-dev-middleware //
 
 if (devMode) {
-    require('./webpack-middleware')(app);
+    require('./webpack-middleware')(app, server);
 }
 
 // load routes //
