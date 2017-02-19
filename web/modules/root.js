@@ -1,1 +1,1 @@
-console.info('root');
+console.info('hi', __DEV__);

@@ -1,8 +1,9 @@
 let io = require('socket.io');
 let webpack = require('webpack');
-let webpackConfig = require('../webpack.config.js');
+let webpackConfig = require('../webpack.config.js')({dev:true});
 
 webpackConfig.output.path = '/';
+
 let compiler = webpack(webpackConfig);
 
 function middlepack(app, server) {
@@ -48,7 +49,7 @@ function middlepack(app, server) {
         let send = res.send;
         res.send = function (string) {
             let body = string instanceof Buffer ? string.toString() : string;
-            body = body.replace(/<\/body>/, a => inject + a);
+            body = body.replace(/<\/head>/, a => inject + a);
             send.call(this, body);
         }
         next();
