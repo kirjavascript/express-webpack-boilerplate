@@ -26,7 +26,7 @@ function middlepack(app, server) {
     // check templates for changes
 
     require('chokidar').watch('web/templates/**/*', {ignored: /[\/\\]\./})
-        .on('all', reload);
+        .on('change', reload);
 
     // load middleware
 
