@@ -53,7 +53,7 @@ module.exports = (env={}) => {
                 __DEV__: env.dev
             }),
         ],
-        devtool: 'eval',
+        devtool: env.dev ? 'source-map' : null,
     };
     
     return config;
