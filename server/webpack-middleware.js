@@ -1,4 +1,4 @@
-let io = require('socket.io');
+let WebSocket = require('ws');
 let webpack = require('webpack');
 let webpackConfig = require('../webpack.config.js')({dev:true});
 
@@ -10,17 +10,15 @@ function middlepack(app, server) {
 
     // init socket info
 
-    let socket = io.listen(server);
+    let wss = new WebSocket.Server({server});
 
     function reload() {
         // send reload signal to active clients
-        Object
-            .keys(socket.sockets.sockets)
-            .map(d => socket.sockets.sockets[d])
-            .filter(client => client.connected)
-            .forEach(client => {
-                client.emit('reload');
-            })
+        wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send('RELOAD');
+            }
+        });
     }
 
     // check templates for changes
@@ -38,10 +36,13 @@ function middlepack(app, server) {
     // inject live reload code
 
     let inject = `
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.js"></script>
         <script>
-            console.info('Development mode; waiting for updates...')
-            io.connect(location.origin).on('reload', () => location.reload());
+            (new WebSocket('ws://' + location.host))
+                .addEventListener('message', (e) => {
+                    if (e.data == 'RELOAD') {
+                        location.reload();
+                    }
+                });
         </script>
     `;
 
