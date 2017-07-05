@@ -1,3 +1,3 @@
-<img src="screenshot.png" alt="mspaint">
+<img src="screenshot.png" alt="hi">
 
 `npm start` to run express & webpack for development
