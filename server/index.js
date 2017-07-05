@@ -10,7 +10,7 @@ catch (e) {
     process.exit();
 }
 
-let devMode = ~process.argv.indexOf('--dev');
+let devMode = ~process.argv.indexOf('--env.dev');
 
 // start server //
 
@@ -27,7 +27,7 @@ let server = app.set('view engine', 'ejs')
 // webpack-dev-middleware //
 
 if (devMode) {
-    require('./webpack-middleware')(app, server);
+    require('../development/middleware')(app, server);
 }
 
 // load routes //
